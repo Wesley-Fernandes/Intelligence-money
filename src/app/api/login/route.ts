@@ -1,33 +1,28 @@
-
-import prisma from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { LoginSchema } from "@/schema/user";
-import { compare } from "bcrypt";
-import { sign } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
+
 export async function POST(request: Request){
     try {
         const body = LoginSchema.parse(await request.json());
+        const {data, error} = await supabase.auth.signInWithPassword({
+            email: body.email,
+            password: body.password
+        })
 
-        const user = await prisma.user.findUnique({where: {email: body.email}})
-
-        if(!user){
-            return NextResponse.json({message: "Usuario não existe."}, {status: 404})
+        if(error){
+            return NextResponse.json({message: error.message}, {status: error.status})
         }
 
-        const validPassword = await compare(body.password, user.password);
-
-        if(!validPassword){
-            return NextResponse.json({message: "Email ou senha inválidos."}, {status: 401})
-        }
-    
-        const token = sign({id: user.id}, process.env.DB_PASS as string);
-        const expires = new Date(Date.now() * 1000000)
-        cookies().set('token', token, {expires, httpOnly: true});
         
-        return NextResponse.json({message: "Logado com suceso!", token}, {status: 200})
+        const now = new Date();
+        cookies().set('token', data.session?.access_token as string, {expires: new Date(now.getTime() + 3600 * 1000)});
+        console.log(data.session?.expires_in)
+        return NextResponse.json({message: "Login succefuly!"}, {status: 200})
+        
     } catch (error) {
         if (error instanceof ZodError) {
             if (error.errors.length > 0) {

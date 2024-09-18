@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -7,34 +7,26 @@ import { ZodError } from "zod";
 export async function GET(){
     try {
 
-        const JWT_SECRET = process.env.DB_PASS as string;
+        const JWT_SECRET = process.env.JWT_SECRET as string;
 
         const token = cookies().get('token')?.value;
 
-        if(!token){
-            return NextResponse.json({message: "Token não encontrado."}, {status: 401})
-        }
-
-        const decoded = verify(token, JWT_SECRET) as {id: string};
-
-        if(!decoded){
+        if(!token||!verify(token, JWT_SECRET)){
             return NextResponse.json({message: "Token inválido."}, {status: 401})
         }
 
-        const users = await prisma.user.findMany({
-            where: {
-                id:{
-                    not: decoded.id
-                }
-            },
-            select:{
-                id: true,
-                email: true,
-                username: true,
-            }
-        })
+        const { data: { user } } = await supabase.auth.getUser(token)
+
+
+        if(!user){
+            return NextResponse.json({message: "Usuário não encontrado."}, {status: 404})
+        }
         
-        return NextResponse.json(users, {status: 200})
+        const data = {
+            id: user.id,
+            name: user.user_metadata.username||""
+        }
+        return NextResponse.json(data, {status: 200})
     } catch (error) {
         if (error instanceof ZodError) {
             if (error.errors.length > 0) {

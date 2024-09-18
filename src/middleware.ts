@@ -4,13 +4,9 @@ import { cookies } from 'next/headers';
 
 export async function middleware(request: NextRequest) {
 
-    const token = cookies().get('token');
+    const token = cookies().get('token')?.value;
 
     if(!token){
-        return NextResponse.redirect(new URL('/', request.url))
-    }
-
-    if(!token.value){
       return NextResponse.redirect(new URL('/', request.url))
     }
 
