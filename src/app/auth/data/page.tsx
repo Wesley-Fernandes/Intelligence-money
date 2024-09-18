@@ -16,7 +16,7 @@ import { useState, type FormEvent } from 'react'
 import { formatISO, parseISO } from 'date-fns'
 import { operators } from './operators'
 
-export default function page() {
+export default function Page() {
   const [loading, setLoading] = useState(false)
   const [type, setType] = useState("");
   const [operator, setOperator] = useState("");

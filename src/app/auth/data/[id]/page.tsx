@@ -10,7 +10,7 @@ import { calculateData, toPrice } from '@/util/calculate'
 import { LoadingPage } from '@/components/LoadingPage'
 import { NotFoundData } from '@/components/NotFoundData'
 
-export default function page({params:{id}}:{params: {id: string}}) {
+export default function Page({params:{id}}:{params: {id: string}}) {
   const [data, setData] = useState<Data|null>(null)
   const [loading, setLoading] = useState(true)
   const {back} = useRouter()

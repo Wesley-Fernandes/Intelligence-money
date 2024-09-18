@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-export async function GET(request: Request){
+export async function GET(){
     try {
 
         const JWT_SECRET = process.env.DB_PASS as string;

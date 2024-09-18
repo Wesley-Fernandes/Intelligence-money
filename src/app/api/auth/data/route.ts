@@ -49,7 +49,7 @@ export async function POST(request: Request){
 
 }
 
-export async function GET(request: Request){
+export async function GET(){
     try {
 
         const JWT_SECRET = process.env.DB_PASS as string;

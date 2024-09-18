@@ -26,6 +26,6 @@ export const useSearch = create<StorageProps>((set) => ({
   parameters: "",
   loading: false,
   setLoading: (loading) => set({ loading }),
-  setData: (datas) => set((state) => ({ datas: datas })),
+  setData: (datas) => set(() => ({ datas: datas })),
   setParameters: (parameters) => set({parameters}),
 }))

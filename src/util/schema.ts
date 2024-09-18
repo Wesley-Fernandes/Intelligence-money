@@ -1,6 +1,6 @@
 
 import { NextResponse } from "next/server";
-import { z, ZodError } from "zod";
+import { ZodError } from "zod";
 
 export function ThrowError(error: unknown) {
     if (error instanceof ZodError) {

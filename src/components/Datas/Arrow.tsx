@@ -1,5 +1,4 @@
 import { ArrowDown, ArrowUp } from 'lucide-react'
-import { Badge } from '../ui/badge'
 
 interface Props{
     type: "PREJUIZO"|"LUCRO"

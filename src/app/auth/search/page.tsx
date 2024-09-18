@@ -6,10 +6,9 @@ import { Search } from '@/components/Search';
 import { useSearch } from '@/store/search'
 import { useEffect } from 'react'
 
-export default function page() {
+export default function Page() {
   const {parameters, datas, setData, setLoading, loading} = useSearch();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(()=>{
     const getData = async () =>{
       setLoading(true);
@@ -28,7 +27,7 @@ export default function page() {
     if(parameters){
       getData();
     }
-  },[parameters])
+  },[parameters, setData,setLoading])
 
   if(loading){
     return  <LoadingPage/>

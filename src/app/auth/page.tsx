@@ -4,7 +4,7 @@ import { LoadingPage } from '@/components/LoadingPage';
 import { NotFoundData } from '@/components/NotFoundData';
 import React, { useEffect, useState } from 'react'
 
-export default function page() {
+export default function Page() {
   const [ data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 

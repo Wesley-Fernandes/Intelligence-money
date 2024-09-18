@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const mongoIdRegex = /^[a-fA-F0-9]{24}$/;
+//const mongoIdRegex = /^[a-fA-F0-9]{24}$/;
 
 export const RecordSchema = z.object({
     start: z.string()

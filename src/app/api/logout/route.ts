@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-export async function POST(request: Request){
+export async function POST(){
     try {
 
         cookies().set('token', '', {expires: new Date(0)});
