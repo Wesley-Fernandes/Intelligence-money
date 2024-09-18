@@ -2,8 +2,8 @@
 import { NextResponse } from "next/server";
 import { getMonthRangeFromLocalDate } from "@/util/time";
 import { cookies } from "next/headers";
-import prisma from "@/lib/prisma";
 import { verify } from "jsonwebtoken";
+import prisma from "@/lib/prisma";
 
 export async function GET(request: Request) {
 	try {
@@ -28,9 +28,7 @@ export async function GET(request: Request) {
 			return NextResponse.json({ message: "O parametro de pesquisa é obrigatorio." },{ status: 400 });
         }
 
-
-
-
+        
         const {firstDay, lastDay} = getMonthRangeFromLocalDate(date)
 
 		const datas = await prisma.record.findMany({ where: {
