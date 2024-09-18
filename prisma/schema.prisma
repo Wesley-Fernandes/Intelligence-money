@@ -1,0 +1,33 @@
+datasource db {
+  url      = env("DATABASE_URL")
+  provider = "mongodb"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum TYPES{
+  LUCRO
+  PREJUIZO
+}
+
+model User {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  email     String   @unique
+  username  String
+  password  String
+  records Record[] @relation("creator_relation")
+}
+
+model Record{
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  start DateTime
+  end   DateTime
+  type  TYPES
+  operator String
+  creatorId String @db.ObjectId()
+  creator User @relation("creator_relation", fields: [creatorId], references: [id])
+}

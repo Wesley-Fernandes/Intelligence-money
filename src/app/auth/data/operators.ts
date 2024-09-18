@@ -1,0 +1,22 @@
+export const operators = [
+    "Rodrigo Garcia",
+    "Wesley Fernandes",
+    "Jessica Fernandes",
+    "Jessica Castro",
+    "José William",
+    "Caroline santos",
+    "Bruno Malluk",
+    "Felipe Mota",
+    "Fabio",
+    "Jonas Armas",
+    "Brenda Pereira",
+    "Eduardo Vieira",
+    "Emily",
+    "Gabriela",
+    "Isa",
+    "Richard",
+    "Edison Hernandez",
+    "Diego Porto",
+    "Catiane",
+    "Bruno Cardoso"
+].sort();
