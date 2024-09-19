@@ -68,7 +68,7 @@ export default function Page() {
           <CardDescription>Preencha todas informações</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} method="post" className='flex flex-col gap-2'>
+          <form onSubmit={handleSubmit} method="post" className='flex flex-col gap-4'>
             <div>
               <Label htmlFor="start" className='flex items-center justify-between gap-10'>
                 <span>Inicio:</span>
