@@ -1,27 +1,18 @@
 "use client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useState, type FormEvent } from 'react'
-import { operators } from './operators'
-import { createNewData } from './action'
 import { toast } from 'sonner'
 import { formatISO, parseISO } from 'date-fns'
+import { OperatorDialog } from '@/components/OperatorDialog'
+import { TypeDialog } from '@/components/TypeDialog'
 
 
 export default function Page() {
   const [loading, setLoading] = useState(false)
-  const [type, setType] = useState<"PREJUIZO"|"LUCRO">("LUCRO");
+  const [type, setType] = useState<"PREJUIZO"|"LUCRO"|null>(null);
   const [operator, setOperator] = useState("");
 
   const handleSubmit = async (e:FormEvent) =>{
@@ -84,33 +75,13 @@ export default function Page() {
             <div>
               <Label htmlFor="operator" className='flex items-center justify-between gap-[1rem]'>
                 <span>Operador:</span>
-                <Select onValueChange={(e)=>setOperator(e)}>
-                <SelectTrigger className="w-[180px]" id='operator'>
-                  <SelectValue placeholder="Selecione o operador" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {operators.map((operador)=>(<SelectItem key={operador} value={operador}>{operador}</SelectItem>))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                <OperatorDialog operator={operator} setOperator={setOperator}/>
               </Label>
             </div>
             <div className='mb-4'>
               <Label htmlFor="types" className='flex items-center justify-between gap-[1rem]'>
                 <span>Tipos:</span>
-                <Select onValueChange={(e)=>setType(e as "PREJUIZO"|"LUCRO")}>
-                <SelectTrigger className="w-[180px]" id='types'>
-                  <SelectValue placeholder="Selecione o tipo"/>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Obteve:</SelectLabel>
-                    <SelectItem value="LUCRO">Lucro</SelectItem>
-                    <SelectItem value="PREJUIZO">Prejuizo</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                <TypeDialog setType={setType} type={type}/>
               </Label>
             </div>
             <hr />
