@@ -20,7 +20,6 @@ export async function POST(request: Request){
         
         const now = new Date();
         cookies().set('token', data.session?.access_token as string, {expires: new Date(now.getTime() + 3600 * 1000)});
-        console.log(data.session?.expires_in)
         return NextResponse.json({message: "Login succefuly!"}, {status: 200})
         
     } catch (error) {

@@ -10,12 +10,7 @@ export default function Page() {
 
   useEffect(()=>{
     const getData = async () =>{
-      const token = localStorage.getItem('token');
-      if(!token){
-        return setData([])
-      }
-
-      const request = await fetch('/api/auth/data', {method: "GET", headers: {'Content-Type': 'application/json', authorization: token}});
+      const request = await fetch('/api/auth/data', {method: "GET", headers: {'Content-Type': 'application/json'}, credentials: "same-origin"});
       const response = await request.json();
       setData(response)
       setLoading(false);

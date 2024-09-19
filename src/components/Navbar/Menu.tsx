@@ -10,6 +10,7 @@ import React from 'react'
 import { Button } from "../ui/button"
 import { AlignJustify, ArrowBigDownDash, CalendarSearch, FilePlus } from "lucide-react"
 import Link from "next/link"
+import { User } from "../User"
 
 export function Menu() {
   return (
@@ -19,7 +20,7 @@ export function Menu() {
           <AlignJustify strokeWidth={1} />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="flex flex-col">
         <SheetHeader className="border-b pb-2">
           <SheetTitle>MENU</SheetTitle>
         </SheetHeader>
@@ -43,6 +44,7 @@ export function Menu() {
             </Link>
           </li>
         </ul>
+        <User/>
       </SheetContent>
     </Sheet>
 
