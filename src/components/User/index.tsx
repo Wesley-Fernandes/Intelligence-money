@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '../ui/card'
 import { notFound} from 'next/navigation';
 import { LoaderCircle } from 'lucide-react';
-import { Logout } from './Logout';
+import Logout from './Logout';
 
 
 interface USER{
