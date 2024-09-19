@@ -16,6 +16,7 @@ import { useState, type FormEvent } from 'react'
 import { operators } from './operators'
 import { createNewData } from './action'
 import { toast } from 'sonner'
+import { formatISO, parseISO } from 'date-fns'
 
 
 export default function Page() {
@@ -24,7 +25,39 @@ export default function Page() {
   const [operator, setOperator] = useState("");
 
   const handleSubmit = async (e:FormEvent) =>{
-    await createNewData({e, operator,setLoading, type, toast})
+    setLoading(true);
+    e.preventDefault();
+    const target = e.target as typeof e.target & {
+      start: {value: string},
+      end: {value: string},
+    }
+
+    const start = formatISO(parseISO(target.start.value));
+    const end = formatISO(parseISO(target.end.value));
+
+    if(!operator||!end||!type||!start){
+      toast.error("Todos os campos são obrigatórios.")
+      setLoading(false);
+      return;
+    }
+
+    const request = await fetch('/api/auth/data', {
+      method: "POST",
+      body: JSON.stringify({start, end, operator, type}),
+      headers: {'Content-Type': 'application/json'},
+      credentials: "same-origin"
+    });
+
+    if(request.status!== 201){
+      toast.error("Erro ao tentar cadastrar o registro.")
+      setLoading(false);
+      return;
+    }
+    
+    toast.success("Registro cadastrado com sucesso.")
+    setLoading(false);
+    return;
+
   }
 
   return (
@@ -63,7 +96,7 @@ export default function Page() {
               </Select>
               </Label>
             </div>
-            <div>
+            <div className='mb-4'>
               <Label htmlFor="types" className='flex items-center justify-between gap-[1rem]'>
                 <span>Tipos:</span>
                 <Select onValueChange={(e)=>setType(e as "PREJUIZO"|"LUCRO")}>
@@ -81,7 +114,7 @@ export default function Page() {
               </Label>
             </div>
             <hr />
-            <Button disabled={loading}>Continuar</Button>
+            <Button disabled={loading} className='mt-4'>Continuar</Button>
           </form>
         </CardContent>
       </Card>
