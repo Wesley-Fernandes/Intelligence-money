@@ -1,7 +1,7 @@
-import prisma from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
+import { getUserByToken } from "@/repository/user";
 import { RecordSchema } from "@/schema/record";
-import { getCurrentMonthRangeISO } from "@/util/time";
-import { verify } from "jsonwebtoken";
+import {  calculateTimeDifference, getMonthTimestamps, TimeDiference } from "@/util/time";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
@@ -9,27 +9,34 @@ import { ZodError } from "zod";
 export async function POST(request: Request){
     try {
 
-        const JWT_SECRET = process.env.DB_PASS as string;
-
         const token = cookies().get('token')?.value;
 
         if(!token){
             return NextResponse.json({message: "Token não encontrado."}, {status: 401})
         }
-
-        const decoded = verify(token, JWT_SECRET) as {id: string};
-
-        if(!decoded){
-            return NextResponse.json({message: "Token inválido."}, {status: 401})
-        }
+    
         const body = RecordSchema.parse(await request.json());
+        const user = await getUserByToken(token);
 
-        await prisma.record.create({
-            data: {
-                ...body,
-                creatorId: decoded.id
-            }
+        const quantity = calculateTimeDifference(body.start, body.end)
+        const {hours, minutes} = TimeDiference(body.start, body.end);
+        const price = (hours  + (minutes / 60)) * 14.12;
+        
+
+        const {error} = await supabase.from("record").insert({
+            startTime: body.start,
+            endTime: body.end,
+            operator: body.operator,
+            type: body.type,
+            creator: user?.id,
+            price,
+            quantity
         })
+
+        if(error){
+            console.error(error);
+            return NextResponse.json({message: error.message}, {status: 401})
+        }
 
         
         return NextResponse.json({message: "Data registrada com sucesso!"}, {status: 201})
@@ -52,7 +59,6 @@ export async function POST(request: Request){
 export async function GET(){
     try {
 
-        const JWT_SECRET = process.env.DB_PASS as string;
 
         const token = cookies().get('token')?.value;
 
@@ -60,24 +66,16 @@ export async function GET(){
             return NextResponse.json({message: "Token não encontrado."}, {status: 401})
         }
 
-        const decoded = verify(token, JWT_SECRET) as {id: string};
+    
+        const user = await getUserByToken(token)
 
-        if(!decoded){
-            return NextResponse.json({message: "Token inválido."}, {status: 401})
-        }
+        const {endOfMonthDate, startOfMonthDate} = getMonthTimestamps();
 
-        const timeline = getCurrentMonthRangeISO();
+        const {data} = await supabase.from("record").select("*").gte("startTime", startOfMonthDate).lte("endTime", endOfMonthDate).eq("creator", user?.id)
 
-
-        const datas = await prisma.record.findMany({
-            where: {
-                creatorId: decoded.id,
-                start: {gte: timeline.start, lte: timeline.end}
-            },
-        })
-
+        console.log(data)
         
-        return NextResponse.json(datas, {status: 201})
+        return NextResponse.json(data, {status: 201})
     } catch (error) {
         if (error instanceof ZodError) {
             if (error.errors.length > 0) {

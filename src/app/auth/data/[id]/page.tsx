@@ -1,12 +1,12 @@
 "use client"
+import type { Data } from '@/store/search'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import type { Data } from '@/store/search'
 import { Info } from 'lucide-react'
-import { DateFormat } from '@/util/time'
-import { calculateData, toPrice } from '@/util/calculate'
+import { ConvertDate} from '@/util/time'
+import { ConvertToMoney } from '@/util/calculate'
 import { LoadingPage } from '@/components/LoadingPage'
 import { NotFoundData } from '@/components/NotFoundData'
 
@@ -63,15 +63,15 @@ export default function Page({params:{id}}:{params: {id: string}}) {
           <div className='flex flex-col gap-1'>
             <div className='flex items-center justify-between hover:bg-blue-500/20 hover:cursor-pointer'>
               <span  className='font-bold'>Criado em:</span>
-              <span>{DateFormat(data.createdAt)}</span>
+              <span>{ConvertDate(data.created_at)}</span>
             </div>
             <div className='flex items-center justify-between hover:bg-blue-500/20 hover:cursor-pointer'>
               <span  className='font-bold'>Inicio:</span>
-              <span>{DateFormat(data.start)}</span>
+              <span>{ConvertDate(data.startTime)}</span>
             </div>
             <div className='flex items-center justify-between hover:bg-blue-500/20 hover:cursor-pointer'>
               <span className='font-bold'>Fim:</span>
-              <span>{DateFormat(data.end)}</span>
+              <span>{ConvertDate(data.endTime)}</span>
             </div>
             <div className='flex items-center justify-between hover:bg-blue-500/20 hover:cursor-pointer'>
               <span className='font-bold'>Você fez para:</span>
@@ -82,8 +82,12 @@ export default function Page({params:{id}}:{params: {id: string}}) {
               {data.type === "LUCRO" ? <span className='text-green-600 font-bold'>LUCRO</span>:<span className='text-red-600 font-bold'>PREJUIZO</span>}
             </div>
             <div className='flex items-center justify-between hover:bg-blue-500/20 hover:cursor-pointer'>
+              <span className='font-bold'>Quantidade de tempo:</span>
+              <span>{data.quantity}</span>
+            </div>
+            <div className='flex items-center justify-between hover:bg-blue-500/20 hover:cursor-pointer'>
               <span className='font-bold'>Valor total:</span>
-              <span>{toPrice(calculateData(data))}</span>
+              <span>{ConvertToMoney(data.price)}</span>
             </div>
             <hr className='my-3'/>
             <div className='flex items-center justify-between'>

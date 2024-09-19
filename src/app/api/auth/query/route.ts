@@ -2,24 +2,17 @@
 import { NextResponse } from "next/server";
 import { getMonthRangeFromLocalDate } from "@/util/time";
 import { cookies } from "next/headers";
-import { verify } from "jsonwebtoken";
-import prisma from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
+import { getUserByToken } from "@/repository/user";
 
 export async function GET(request: Request) {
 	try {
-        const JWT_SECRET = process.env.DB_PASS as string;
-
         const token = cookies().get('token')?.value;
 
         if(!token){
             return NextResponse.json({message: "Token não encontrado."}, {status: 401})
         }
-
-        const decoded = verify(token, JWT_SECRET) as {id: string};
-
-        if(!decoded){
-            return NextResponse.json({message: "Token inválido."}, {status: 401})
-        }
+        const user = await getUserByToken(token);
         
 		const url = new URL(request.url as string);
 		const date = url.searchParams.get("date");
@@ -31,15 +24,14 @@ export async function GET(request: Request) {
         
         const {firstDay, lastDay} = getMonthRangeFromLocalDate(date)
 
-		const datas = await prisma.record.findMany({ where: {
-            start: {
-                gte: firstDay,
-                lte: lastDay
-            },
-            creatorId: decoded.id,
-        }});
+		const {error, data} = await supabase.from("record").select("*").gte("startTime", firstDay).lte("endTime", lastDay).eq("creator", user?.id)
 
-		return NextResponse.json(datas, { status: 200 });
+        if(error){
+            console.error(error);
+            return NextResponse.json({message: error.message}, {status: 401})
+        }
+
+		return NextResponse.json(data, { status: 200 });
 	} catch (err) {
 		return NextResponse.json(
 			{ message: "Erro interno. Tente novamente" },

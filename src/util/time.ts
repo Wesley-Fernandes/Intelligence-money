@@ -1,5 +1,5 @@
 
-import type { Data } from '@/store/search';
+
 import { startOfMonth, endOfMonth, format, parse, parseISO, differenceInMinutes } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -55,7 +55,29 @@ export function TimeDiference(startISO: string, endISO: string) {
   };
 }
 
-export const formatTime = (data:Data)=>{
-  const {hours, minutes} = TimeDiference(data.start, data.end)
-  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`
+
+export function getMonthTimestamps() {
+  const now = new Date();
+
+  const startOfMonthDate = startOfMonth(now).toISOString();
+  const endOfMonthDate = endOfMonth(now).toISOString();
+
+  return { startOfMonthDate, endOfMonthDate };
+}
+
+export function calculateTimeDifference(startDate:string, endDate:string) {
+  const totalMinutes = differenceInMinutes(new Date(endDate), new Date(startDate));
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}h`;
+
+  return formattedTime;
+}
+
+
+export function ConvertDate(isoDateString:string) {
+  const date = new Date(isoDateString);
+  return format(date, 'dd/MM/yyyy');
 }

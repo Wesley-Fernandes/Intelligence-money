@@ -1,35 +1,28 @@
-import prisma from "@/lib/prisma";
-import { getCurrentMonthRangeISO } from "@/util/time";
-import { verify } from "jsonwebtoken";
+import { supabase } from "@/lib/supabase";
+import { getUserByToken } from "@/repository/user";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 export async function GET(request: Request, { params }: { params: { id: string } }){
     try {
-        const JWT_SECRET = process.env.DB_PASS as string;
-
         const token = cookies().get('token')?.value;
 
         if(!token){
             return NextResponse.json({message: "Token não encontrado."}, {status: 401})
         }
+        const user = await getUserByToken(token);
 
-        const decoded = verify(token, JWT_SECRET) as {id: string};
+        const {error, data} = await supabase.from("record").select("*").eq("id", params.id).eq("creator", user?.id);
 
-        if(!decoded){
-            return NextResponse.json({message: "Token inválido."}, {status: 401})
+        if(error){
+            console.error(error);
+            return NextResponse.json({message: error.message}, {status: 401})
         }
-
-        const data = await prisma.record.findUnique({
-            where: {
-                id: params.id,
-                creatorId: decoded.id
-            }
-        })
-
         
-        return NextResponse.json(data, {status: 201})
+        const response = data[0];
+        return NextResponse.json(response, {status: 201});
+
     } catch (error) {
         if (error instanceof ZodError) {
             if (error.errors.length > 0) {
@@ -48,32 +41,19 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }){
     try {
-
-        const JWT_SECRET = process.env.DB_PASS as string;
-
         const token = cookies().get('token')?.value;
 
         if(!token){
             return NextResponse.json({message: "Token não encontrado."}, {status: 401})
         }
+        const user = await getUserByToken(token);
 
-        const decoded = verify(token, JWT_SECRET) as {id: string};
+        const {error} = await supabase.from("record").delete().eq("id", params.id).eq("creator", user?.id);
 
-        if(!decoded){
-            return NextResponse.json({message: "Token inválido."}, {status: 401})
+        if(error){
+            console.error(error);
+            return NextResponse.json({message: error.message}, {status: 401})
         }
-
-        const timeline = getCurrentMonthRangeISO();
-
-        console.log({start: timeline.start, end: timeline.end})
-
-        await prisma.record.delete({
-            where: {
-                creatorId: decoded.id,
-                id: params.id
-            }
-        })
-
         
         return NextResponse.json({message: "Data deletada com sucesso!"}, {status: 201})
     } catch (error) {

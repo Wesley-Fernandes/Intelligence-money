@@ -37,17 +37,20 @@ export default function Datas({datas}: {datas: DATA[]}) {
         <TableFooter>
         <TableRow className='bg-zinc-700 text-white hover:bg-zinc-800'>
           <TableCell colSpan={5}>Lucro</TableCell>
-          <TableCell className="text-right text-green-500">{toPrice(calculateAllDatas(datas, "LUCRO"))} +</TableCell>
+          <TableCell className="text-right text-green-500">LUCRO</TableCell>
         </TableRow>
         <TableRow className='bg-zinc-700 text-white hover:bg-zinc-800'>
           <TableCell colSpan={5}>Prejuizo</TableCell>
-          <TableCell className="text-right text-red-500">{toPrice(calculateAllDatas(datas, "PREJUIZO"))} -</TableCell>
+          <TableCell className="text-right text-red-500">PREJU</TableCell>
         </TableRow>
         <TableRow className='bg-zinc-700 text-white hover:bg-zinc-800'>
           <TableCell colSpan={5}>Restante</TableCell>
-          <TableCell className="text-right text-blue-400">{toPrice(calculateAllDatas(datas, "LUCRO")-calculateAllDatas(datas, "PREJUIZO"))}</TableCell>
+          <TableCell className="text-right text-blue-400">TOTAL</TableCell>
         </TableRow>
       </TableFooter>
     </Table>
   )
 }
+//calculate total {toPrice(calculateAllDatas(datas, "LUCRO")-calculateAllDatas(datas, "PREJUIZO"))}
+//calculate gain {toPrice(calculateAllDatas(datas, "LUCRO"))} +
+//calculate preju {toPrice(calculateAllDatas(datas, "PREJUIZO"))} 

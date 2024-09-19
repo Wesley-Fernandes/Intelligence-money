@@ -3,6 +3,7 @@ import React, { type FormEvent } from 'react'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { useRouter } from 'next/navigation';
+import { LoaderCircle } from 'lucide-react';
 export const Login = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -11,6 +12,7 @@ export const Login = () => {
 
   const submiter = async (e:FormEvent)=>{
     e.preventDefault();
+    setLoading(true);
     const request =  await fetch("/api/login", {
       method: "POST",
       body: JSON.stringify({email, password})
@@ -24,7 +26,9 @@ export const Login = () => {
     const response = await request.json();
 
     localStorage.setItem("token", response.token);
+    setLoading(false);
     push("/auth")
+    
   }
   return (
     <form onSubmit={submiter} className='flex flex-col gap-1 border p-2 rounded-sm shadow-md bg-primary-foreground w-full'>
@@ -32,7 +36,9 @@ export const Login = () => {
         <Input type="email" placeholder="email@email.com" onChange={(e)=> (setEmail(e.target.value))}/>
         <Input type="password" placeholder="Password" onChange={(e)=> (setPassword(e.target.value))}/>
         <hr className='my-2'/>
-        <Button type="submit" className='mb-4' disabled={loading}>Continuar</Button>
+        <Button type="submit" className='mb-4' disabled={loading}>
+          {loading ? <LoaderCircle size={20}  className='animate-spin'/> : "Continuar"}
+        </Button>
     </form>
   )
 }

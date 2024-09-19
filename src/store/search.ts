@@ -1,16 +1,16 @@
 import { create } from 'zustand'
 
-export type Data = {
-    id: string,
-    createdAt: string,
-    start: string,
-    end: string,
-    operatorId: string,
-    creatorId: string,
-    operator: string,
-    type: "PREJUIZO"|"LUCRO"
+export type Data ={
+  id: number,
+  created_at: string,
+  startTime: string,
+  endTime: string,
+  creator: string,
+  price: number,
+  operator: string,
+  type: "PREJUIZO"|"LUCRO",
+  quantity: string,
 }
-
 interface StorageProps{
     datas: Data[];
     setData: (data: Data[]) => void;
