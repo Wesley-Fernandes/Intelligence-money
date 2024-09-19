@@ -15,7 +15,7 @@ interface USER {
 }
 export const getUser = async ()=>{
   const request = await fetch("/api/auth/user", {credentials: "same-origin", method: "GET"});
-  const response = (await request.json()) as USER;
+  const response = await (await request.json()) as USER;
 
   return response
 }
