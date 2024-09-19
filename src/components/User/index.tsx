@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '../ui/
 import { useRouter } from 'next/navigation'
 import Logout from './Logout'
 import { useEffect, useState } from 'react'
+import { getUser } from './action'
 
 interface USER {
     id: string;
@@ -16,19 +17,22 @@ export default function User() {
     const router = useRouter()
 
     useEffect(() => {
-        const fetchUser = async () => {
+        const getUserData = async () => {
             try {
-                const request = await fetch("/api/auth/user", {
-                    method: "GET",
-                    credentials: "same-origin",
-                    cache: "no-store"
-                });
-                if (request.status !== 200) {
+                const cachedUser = localStorage.getItem('cachedUser')
+                if (cachedUser) {
+                    setUser(JSON.parse(cachedUser))
+                    setLoading(false)
+                    return
+                }
+
+                const userData = await getUser()
+                if (!userData) {
                     router.push('/404')
                     return
                 }
-                const response = await request.json() as USER
-                setUser(response)
+                setUser(userData)
+                localStorage.setItem('cachedUser', JSON.stringify(userData))
             } catch (error) {
                 console.error("Failed to fetch user:", error)
             } finally {
@@ -36,7 +40,7 @@ export default function User() {
             }
         }
 
-        fetchUser()
+        getUserData()
     }, [router])
 
     if (loading) {
@@ -55,7 +59,7 @@ export default function User() {
                     <CardDescription className='text-xs'>{user.id}</CardDescription>
                 </CardHeader>
                 <CardFooter>
-                    <Logout/>
+                    <Logout />
                 </CardFooter>
             </Card> 
         </div>

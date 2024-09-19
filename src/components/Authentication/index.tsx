@@ -10,7 +10,7 @@ import {Login} from './login'
 
 export const AuthenticationMethods = () => {
   return (
-    <Tabs defaultValue="login" className="w-[400px]">
+    <Tabs defaultValue="login" className="w-80">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="login">Login</TabsTrigger>
         <TabsTrigger value="register">Registrar</TabsTrigger>

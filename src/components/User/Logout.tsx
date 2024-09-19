@@ -8,6 +8,7 @@ export default function Logout() {
   const router = useRouter()
   const handleLogout = async () => {
     await logout()
+    localStorage.removeItem("cachedUser")
     router.push("/")
   }
   return (
