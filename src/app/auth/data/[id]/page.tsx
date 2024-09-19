@@ -9,6 +9,7 @@ import { ConvertDate} from '@/util/time'
 import { ConvertToMoney } from '@/util/calculate'
 import { LoadingPage } from '@/components/LoadingPage'
 import { NotFoundData } from '@/components/NotFoundData'
+import { DeleteDialog } from '@/components/DeleteDialog'
 
 export default function Page({params:{id}}:{params: {id: string}}) {
   const [data, setData] = useState<Data|null>(null)
@@ -19,7 +20,13 @@ export default function Page({params:{id}}:{params: {id: string}}) {
     const getData = async () =>{
       const request = await fetch(`/api/auth/data/${id}`, {method: 'GET', credentials: "same-origin"});
       const response = await request.json();
+      if(request.status!==200){
+        setData(null)
+        setLoading(false);
+        return;
+      }
       setData(response);
+      console.log(response)
       setLoading(false);
     }
 
@@ -27,25 +34,13 @@ export default function Page({params:{id}}:{params: {id: string}}) {
   },[id])
 
 
-  const deleteData = async()=>{
-    if(!window.confirm('Deseja excluir esse registro?')){
-      return;
-    }
-    const request = await fetch(`/api/auth/data/${id}`, {method: 'DELETE', credentials: "same-origin"});
-    if(request.status === 201){
-      back()
-    }else{
-      alert("Erro ao tentar excluir o registro.")
-    }
-  }
-
   if(loading){
     return <LoadingPage/>
   }
 
   if(!data){
     return(
-      <main className='screen'>
+      <main className='screen flex'>
         <NotFoundData/>
       </main>
     )
@@ -92,7 +87,7 @@ export default function Page({params:{id}}:{params: {id: string}}) {
             <hr className='my-3'/>
             <div className='flex items-center justify-between'>
               <Button variant="outline" onClick={back}>Voltar</Button>
-              <Button variant="destructive" onClick={deleteData}>Deletar</Button>
+              <DeleteDialog id={data.id}/>
             </div>
           </div>
         </CardContent>

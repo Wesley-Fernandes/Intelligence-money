@@ -13,46 +13,18 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useState, type FormEvent } from 'react'
-import { formatISO, parseISO } from 'date-fns'
 import { operators } from './operators'
+import { createNewData } from './action'
+import { toast } from 'sonner'
+
 
 export default function Page() {
   const [loading, setLoading] = useState(false)
-  const [type, setType] = useState("");
+  const [type, setType] = useState<"PREJUIZO"|"LUCRO">("LUCRO");
   const [operator, setOperator] = useState("");
 
   const handleSubmit = async (e:FormEvent) =>{
-    setLoading(true);
-    e.preventDefault();
-    const target = e.target as typeof e.target & {
-      start: {value: string},
-      end: {value: string},
-    }
-
-    const start = formatISO(parseISO(target.start.value));
-    const end = formatISO(parseISO(target.end.value));
-
-    if(!operator||!end||!type||!start){
-      alert("Todos os campos são obrigatórios.")
-      setLoading(false);
-      return;
-    }
-    console.log({start, end, operator, type})
-    const request = await fetch('/api/auth/data', {
-      method: "POST",
-      body: JSON.stringify({start, end, operator, type}),
-      headers: {'Content-Type': 'application/json'},
-      credentials: "same-origin"
-    });
-
-    if(request.status!== 201){
-      alert("Erro ao tentar cadastrar o registro.")
-      setLoading(false);
-      return;
-    }
-    
-    alert("Registro cadastrado com sucesso.")
-    return;
+    await createNewData({e, operator,setLoading, type, toast})
   }
 
   return (
@@ -94,7 +66,7 @@ export default function Page() {
             <div>
               <Label htmlFor="types" className='flex items-center justify-between gap-[1rem]'>
                 <span>Tipos:</span>
-                <Select onValueChange={(e)=>setType(e)}>
+                <Select onValueChange={(e)=>setType(e as "PREJUIZO"|"LUCRO")}>
                 <SelectTrigger className="w-[180px]" id='types'>
                   <SelectValue placeholder="Selecione o tipo"/>
                 </SelectTrigger>

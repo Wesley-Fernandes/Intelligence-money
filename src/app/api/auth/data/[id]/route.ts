@@ -21,7 +21,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         }
         
         const response = data[0];
-        return NextResponse.json(response, {status: 201});
+        return NextResponse.json(response, {status: 200});
 
     } catch (error) {
         if (error instanceof ZodError) {

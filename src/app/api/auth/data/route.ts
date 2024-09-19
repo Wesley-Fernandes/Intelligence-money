@@ -1,6 +1,8 @@
+import type { Data } from "@/store/search";
 import { supabase } from "@/lib/supabase";
 import { getUserByToken } from "@/repository/user";
 import { RecordSchema } from "@/schema/record";
+import { sortByCreateation } from "@/util/data";
 import {  calculateTimeDifference, getMonthTimestamps, TimeDiference } from "@/util/time";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -72,10 +74,11 @@ export async function GET(){
         const {endOfMonthDate, startOfMonthDate} = getMonthTimestamps();
 
         const {data} = await supabase.from("record").select("*").gte("startTime", startOfMonthDate).lte("endTime", endOfMonthDate).eq("creator", user?.id)
+        const order = sortByCreateation(data as Data[])
 
         console.log(data)
         
-        return NextResponse.json(data, {status: 201})
+        return NextResponse.json(order, {status: 201})
     } catch (error) {
         if (error instanceof ZodError) {
             if (error.errors.length > 0) {
