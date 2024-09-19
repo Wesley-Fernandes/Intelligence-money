@@ -11,18 +11,10 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
 
-  import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
 import type { SetStateAction, Dispatch } from 'react'
 import { Button } from "./ui/button";
 import { Label } from "./ui/label"
-import { operators } from "@/constant/operators"
+import { Input } from "./ui/input";
   
 interface Props{
     setOperator: Dispatch<SetStateAction<string>>
@@ -43,16 +35,7 @@ export const OperatorDialog = ({setOperator, operator}:Props) => {
             <div>
               <Label htmlFor="operator" className='flex items-center justify-between gap-[1rem]'>
                 <span>Operador:</span>
-                <Select onValueChange={(e)=>setOperator(e)}>
-                <SelectTrigger className="w-[180px]" id='operator'>
-                  <SelectValue placeholder="Selecione o operador" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {operators.map((operador)=>(<SelectItem key={operador} value={operador}>{operador}</SelectItem>))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                <Input placeholder="Digite o nome do operador..." onChange={(e)=>setOperator(e.target.value)}/>
               </Label>
             </div>
           </AlertDialogHeader>
