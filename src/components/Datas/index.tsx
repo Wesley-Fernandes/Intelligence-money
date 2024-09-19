@@ -36,16 +36,16 @@ export default function Datas({datas}: {datas: DATA[]}) {
         </TableBody>
         <TableFooter>
         <TableRow className='bg-zinc-700 text-white hover:bg-zinc-800'>
-          <TableCell colSpan={5}>Lucro</TableCell>
-          <TableCell className="text-right text-green-500">{ConvertToMoney(calculateAllDatas(datas, "LUCRO"))}</TableCell>
+          <TableCell colSpan={4}>Lucro</TableCell>
+          <TableCell colSpan={2} className="text-right text-green-500">{ConvertToMoney(calculateAllDatas(datas, "LUCRO"))}</TableCell>
         </TableRow>
         <TableRow className='bg-zinc-700 text-white hover:bg-zinc-800'>
-          <TableCell colSpan={5}>Prejuizo</TableCell>
-          <TableCell className="text-right text-red-500">{ConvertToMoney(calculateAllDatas(datas, "PREJUIZO"))}</TableCell>
+          <TableCell colSpan={4}>Prejuizo</TableCell>
+          <TableCell colSpan={2} className="text-right text-red-500">{ConvertToMoney(calculateAllDatas(datas, "PREJUIZO"))}</TableCell>
         </TableRow>
         <TableRow className='bg-zinc-700 text-white hover:bg-zinc-800'>
-          <TableCell colSpan={5}>Restante</TableCell>
-          <TableCell className="text-right text-blue-400">{ConvertToMoney(calculateAllDatas(datas, "LUCRO")-calculateAllDatas(datas, "PREJUIZO"))}</TableCell>
+          <TableCell colSpan={4}>Restante</TableCell>
+          <TableCell colSpan={2} className="text-right text-blue-400">{ConvertToMoney(calculateAllDatas(datas, "LUCRO")-calculateAllDatas(datas, "PREJUIZO"))}</TableCell>
         </TableRow>
       </TableFooter>
     </Table>
