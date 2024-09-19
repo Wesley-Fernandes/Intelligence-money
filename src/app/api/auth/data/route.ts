@@ -75,8 +75,6 @@ export async function GET(){
 
         const {data} = await supabase.from("record").select("*").gte("startTime", startOfMonthDate).lte("endTime", endOfMonthDate).eq("creator", user?.id)
         const order = sortByCreateation(data as Data[])
-
-        console.log(data)
         
         return NextResponse.json(order, {status: 201})
     } catch (error) {
