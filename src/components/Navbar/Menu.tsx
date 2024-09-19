@@ -10,7 +10,7 @@ import React from 'react'
 import { Button } from "../ui/button"
 import { AlignJustify, ArrowBigDownDash, CalendarSearch, FilePlus } from "lucide-react"
 import Link from "next/link"
-import { User } from "../User"
+import User from "../User"
 
 export function Menu() {
   return (

@@ -8,7 +8,7 @@ export default function Logout() {
   const router = useRouter()
   const handleLogout = async () => {
     await logout()
-    router.refresh()
+    router.push("/")
   }
   return (
     <form className='w-full' action={handleLogout}>

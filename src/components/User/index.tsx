@@ -1,52 +1,63 @@
-import { useEffect, useState } from 'react'
+'use client'
+
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '../ui/card'
-import { notFound} from 'next/navigation';
-import { LoaderCircle } from 'lucide-react';
-import Logout from './Logout';
+import { useRouter } from 'next/navigation'
+import Logout from './Logout'
+import { useEffect, useState } from 'react'
 
-
-interface USER{
+interface USER {
     id: string;
     name: string;
 }
-export const User = () => {
-    const [user, setUser] = useState<USER|null>(null)
-    const [loading, setLoading] = useState(true)
 
-    useEffect(()=>{
-        const getUser =  async () =>{
-            const request = await fetch("/api/auth/user", {method: "GET", credentials: "same-origin"});
-    
-            if(request.status !== 200){
-                return notFound();
+export default function User() {
+    const [user, setUser] = useState<USER | null>(null)
+    const [loading, setLoading] = useState(true)
+    const router = useRouter()
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const request = await fetch("/api/auth/user", {
+                    method: "GET",
+                    credentials: "same-origin",
+                    cache: "no-store"
+                });
+                if (request.status !== 200) {
+                    router.push('/404')
+                    return
+                }
+                const response = await request.json() as USER
+                setUser(response)
+            } catch (error) {
+                console.error("Failed to fetch user:", error)
+            } finally {
+                setLoading(false)
             }
-    
-            const response = await request.json()
-            setUser(response)
-            setLoading(false)
-            return
         }
 
-        getUser()
-    }, [])
+        fetchUser()
+    }, [router])
 
-  return (
-    <div className='flex flex-1 items-end'>
-        <Card className='min-h-24 h-fit w-full'>
-            {
-                loading ? <LoaderCircle className='animate-spin text-blue-500' /> :(
-                    <>
-                        <CardHeader>
-                            <CardTitle>{user?.name}</CardTitle>
-                            <CardDescription className='text-xs'>{user?.id}</CardDescription>
-                        </CardHeader>
-                        <CardFooter>
-                            <Logout/>
-                        </CardFooter>
-                    </>
-                )
-            }
-        </Card>
-    </div>
-  )
+    if (loading) {
+        return <div>Loading...</div>
+    }
+
+    if (!user) {
+        return null
+    }
+
+    return (
+        <div className='flex flex-1 items-end'>
+            <Card className='min-h-24 h-fit w-full'>
+                <CardHeader>
+                    <CardTitle>{user.name}</CardTitle>
+                    <CardDescription className='text-xs'>{user.id}</CardDescription>
+                </CardHeader>
+                <CardFooter>
+                    <Logout/>
+                </CardFooter>
+            </Card> 
+        </div>
+    )
 }
